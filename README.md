@@ -1,62 +1,132 @@
-# TrustPay MVP
+# TrustPay
 
-TrustPay is an escrow-first checkout prototype built with Next.js App Router and MongoDB.
+TrustPay is a secure escrow-style web app for digital commerce. Buyers create transactions, funds are held in escrow, and release happens after delivery confirmation. The app includes dispute handling, multilingual UX support, role-based dashboards, and educational guidance for safer online trading.
 
-Core promise: **Pay Only When You Receive**.
+## What this project includes
 
-## Stack
+- Landing page with product education and trust-focused messaging
+- Authentication flow (signup, login, forgot/reset password)
+- Buyer flow: create transaction, track status, confirm/review
+- Seller flow: seller dashboard and profile/review management
+- Admin view for platform-level oversight
+- Supabase integration (auth + database)
+- Test setup with Vitest and Playwright
 
-- Next.js 16 (App Router)
-- MongoDB + Mongoose
-- Simulated Interswitch Web Checkout callback flow
-- Multilingual UI labels (English, Nigerian Pidgin, Yoruba, Hausa) via a Yarn GPT translation utility adapter
+## Tech stack
 
-## Required Environment Variables
+- React 18 + TypeScript
+- Vite 5
+- React Router
+- Tailwind CSS + shadcn/ui + Radix UI
+- Supabase JavaScript client
+- React Query
+- Vitest + Testing Library + Playwright
 
-Create a `.env.local` file:
+## App routes
 
-```bash
-MONGODB_URI=<your-mongodb-connection-string>
-MONGODB_DB=trustpay
-NEXT_PUBLIC_APP_URL=http://localhost:3000
-BETTER_AUTH_URL=http://localhost:3000
-BETTER_AUTH_SECRET=<at-least-32-char-random-secret>
-CYBERSECURITY_CONFIRM_URL=<optional-external-cyber-confirm-endpoint>
-CYBERSECURITY_SHARED_SECRET=<optional-service-to-service-secret>
-```
+- `/` — Landing page
+- `/login` — Sign in
+- `/signup` — Sign up
+- `/forgot-password` — Request password reset
+- `/reset-password` — Complete password reset
+- `/dashboard` — Buyer dashboard
+- `/seller-dashboard` — Seller dashboard
+- `/admin` — Admin dashboard
+- `/create-transaction` — New escrow transaction
+- `/transaction/:id` — Transaction details
+- `/dispute/:id` — Dispute page
 
-## Run Locally
+## Getting started
+
+### 1) Install dependencies
 
 ```bash
 npm install
+```
+
+### 2) Configure environment variables
+
+Create a `.env` file in the project root (or use `.env.local` in your local setup):
+
+```env
+VITE_SUPABASE_URL=your_supabase_project_url
+VITE_SUPABASE_PUBLISHABLE_KEY=your_supabase_anon_key
+```
+
+### 3) Run development server
+
+```bash
 npm run dev
 ```
 
-Open http://localhost:3000.
+### 4) Build for production
 
-## Transaction Lifecycle
+```bash
+npm run build
+```
 
-`PENDING -> ESCROW -> DELIVERED -> COMPLETED`
+### 5) Preview production build
 
-`DISPUTED` can be raised from `ESCROW` or `DELIVERED`.
+```bash
+npm run preview
+```
 
-## API Routes
+## Scripts
 
-- `POST /api/create-transaction`
-- `POST /api/pay`
-- `GET /api/interswitch/callback`
-- `POST /api/transactions/confirm/:id`
-- `POST /api/raise-dispute`
+- `npm run dev` — Start Vite dev server
+- `npm run build` — Production build
+- `npm run build:dev` — Development-mode build
+- `npm run preview` — Preview built app
+- `npm run lint` — Run ESLint
+- `npm run test` — Run unit tests once
+- `npm run test:watch` — Run unit tests in watch mode
 
-Additional lifecycle helper:
+## Supabase notes
 
-- `POST /api/confirm-delivery` (legacy compatibility route)
-- `POST /api/mark-delivered`
+- Supabase client setup lives in `src/integrations/supabase/client.ts`.
+- Database and auth are expected to be provided by your Supabase project.
+- Local Supabase config and migration artifacts are in the `supabase/` directory.
 
-## MVP Logic Included
+## Testing
 
-- Trust score starts at `50`
-- Successful completion adds `+10` trust to buyer and seller
-- Lost dispute applies `-20` trust penalty
-- Risk engine flags new-account high-value transactions and users with multiple active disputes
-- Blockchain-style tamper log stores SHA-256 hash chain entries per transaction event
+Unit tests:
+
+```bash
+npm run test
+```
+
+End-to-end (Playwright):
+
+```bash
+npx playwright test
+```
+
+## Deployment
+
+Any static frontend host that supports Vite output works (for example: Vercel, Netlify, Cloudflare Pages).
+
+Deployment checklist:
+
+1. Set `VITE_SUPABASE_URL`
+2. Set `VITE_SUPABASE_PUBLISHABLE_KEY`
+3. Run build command: `npm run build`
+4. Publish `dist/`
+
+## Project structure (high-level)
+
+```text
+src/
+	components/      # Shared UI + feature components
+	contexts/        # React context providers
+	hooks/           # Custom hooks
+	i18n/            # Translation resources
+	integrations/    # External service clients (Supabase)
+	lib/             # Utility logic
+	pages/           # Route-level pages
+	test/            # Test setup and examples
+supabase/          # Supabase config, functions, migrations
+```
+
+---
+
+If you want, I can also add a short “API and database schema” section next, based on your current Supabase tables and edge functions.
