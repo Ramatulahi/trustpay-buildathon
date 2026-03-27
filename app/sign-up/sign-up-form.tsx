@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { UserPlus, AlertCircle } from "lucide-react";
 
 import { authClient } from "@/lib/auth-client";
 
@@ -37,43 +38,63 @@ export function SignUpForm() {
   };
 
   return (
-    <form onSubmit={onSubmit} className="space-y-4 rounded-lg border border-foreground/20 p-4">
-      <div className="grid gap-2">
-        <label>Name</label>
+    <form onSubmit={onSubmit} className="flex flex-col gap-4">
+      <div className="flex flex-col gap-2">
+        <label className="text-xs font-medium text-neutral-300">Full name</label>
         <input
           required
           value={name}
           onChange={(event) => setName(event.target.value)}
-          className="rounded-md border border-foreground/20 bg-transparent px-3 py-2"
+          placeholder="Your name"
         />
       </div>
-      <div className="grid gap-2">
-        <label>Email</label>
+
+      <div className="flex flex-col gap-2">
+        <label className="text-xs font-medium text-neutral-300">Email</label>
         <input
           required
           type="email"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
-          className="rounded-md border border-foreground/20 bg-transparent px-3 py-2"
+          placeholder="you@example.com"
         />
       </div>
-      <div className="grid gap-2">
-        <label>Password</label>
+
+      <div className="flex flex-col gap-2">
+        <label className="text-xs font-medium text-neutral-300">Password</label>
         <input
           required
           type="password"
           minLength={8}
           value={password}
           onChange={(event) => setPassword(event.target.value)}
-          className="rounded-md border border-foreground/20 bg-transparent px-3 py-2"
+          placeholder="••••••••"
         />
       </div>
-      {error ? <p className="text-sm text-red-400">{error}</p> : null}
+
+      {error && (
+        <div className="flex items-center gap-2 rounded-lg bg-red-950/30 px-3 py-2 text-xs text-red-300">
+          <AlertCircle className="h-4 w-4" />
+          {error}
+        </div>
+      )}
+
       <button
+        type="submit"
         disabled={loading}
-        className="rounded-md border border-foreground/20 px-4 py-2 disabled:opacity-60"
+        className="tp-btn-primary"
       >
-        {loading ? "Creating..." : "Create account"}
+        {loading ? (
+          <span className="flex items-center gap-2">
+            <span className="inline-block h-3 w-3 animate-spin rounded-full border border-black border-r-transparent" />
+            Creating account...
+          </span>
+        ) : (
+          <span className="flex items-center gap-2">
+            <UserPlus className="h-4 w-4" />
+            Create account
+          </span>
+        )}
       </button>
     </form>
   );

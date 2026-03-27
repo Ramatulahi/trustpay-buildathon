@@ -3,6 +3,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { auth } from "@/lib/auth";
+import { BrandMark } from "@/components/BrandMark";
 import { SignUpForm } from "./sign-up-form";
 
 export default async function SignUpPage() {
@@ -13,18 +14,26 @@ export default async function SignUpPage() {
   }
 
   return (
-    <main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-6 px-4 py-10">
-      <div>
-        <h1 className="text-2xl font-semibold">Create account</h1>
-        <p className="text-sm opacity-75">Start using TrustPay quickly.</p>
-      </div>
-      <SignUpForm />
-      <p className="text-sm">
-        Already have an account?{" "}
-        <Link href="/sign-in" className="underline underline-offset-4">
-          Sign in
-        </Link>
-      </p>
+    <main className="tp-shell flex flex-1 flex-col justify-center">
+      <BrandMark />
+
+      <section className="tp-card">
+        <div>
+          <h1 className="tp-title">Create your account</h1>
+          <p className="tp-subtitle">Join TrustPay and secure your transactions.</p>
+        </div>
+
+        <div className="tp-divider" />
+
+        <SignUpForm />
+
+        <p className="mt-5 text-center text-sm text-neutral-400">
+          Already have an account?{" "}
+          <Link href="/sign-in" className="tp-link">
+            Sign in
+          </Link>
+        </p>
+      </section>
     </main>
   );
 }
