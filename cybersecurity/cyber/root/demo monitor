@@ -1,0 +1,29 @@
+import time
+import sys
+
+def log_visual(status, message):
+    color = "\033[92m" if status == "PASS" else "\033[91m"
+    reset = "\033[0m"
+    print(f"[{time.strftime('%H:%M:%S')}] {color}{status}{reset} | {message}")
+    return status # We return the status so we can check it later
+
+print("🛡️  TRUSTPAY SECURITY MONITOR ACTIVE...")
+print("-" * 50)
+
+# 1. Simulate Normal Activity
+log_visual("PASS", "User 'fola_buyer' logged in. Device Verified.")
+time.sleep(1)
+log_visual("PASS", "Transaction initialized: ₦15,000 for 'IPhone Case'.")
+time.sleep(2)
+
+# 2. Simulate the Attack Catch
+last_status = log_visual("BLOCK", "SUSPICIOUS ACTIVITY: Seller 'scam_vendor_99' matches Blacklist!")
+log_visual("BLOCK", "Risk Score: 85/100. Transaction Aborted.")
+
+print("-" * 50)
+
+# 3. Use the 'sys' library to trigger an emergency exit
+if last_status == "BLOCK":
+    print("🚨 EMERGENCY SHUTDOWN: Preventing Fund Leak...")
+    time.sleep(1)
+    sys.exit(1)  # This lights up your 'import sys' and closes the script with an error code
