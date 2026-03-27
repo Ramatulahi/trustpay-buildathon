@@ -1,132 +1,174 @@
 # TrustPay
 
-TrustPay is a secure escrow-style web app for digital commerce. Buyers create transactions, funds are held in escrow, and release happens after delivery confirmation. The app includes dispute handling, multilingual UX support, role-based dashboards, and educational guidance for safer online trading.
+### Pay Only When You Receive
 
-## What this project includes
+## Live Demo
+https://trustpay-interswitch.vercel.app/
 
-- Landing page with product education and trust-focused messaging
-- Authentication flow (signup, login, forgot/reset password)
-- Buyer flow: create transaction, track status, confirm/review
-- Seller flow: seller dashboard and profile/review management
-- Admin view for platform-level oversight
-- Supabase integration (auth + database)
-- Test setup with Vitest and Playwright
+## Demo Credentials
+**Buyer Account**
+Email:testbuyer@example.com
+Password: 123456
 
-## Tech stack
+**Seller Account**
+Email:testseller@example.com
+Password: 123456
 
-- React 18 + TypeScript
-- Vite 5
-- React Router
-- Tailwind CSS + shadcn/ui + Radix UI
-- Supabase JavaScript client
-- React Query
-- Vitest + Testing Library + Playwright
+## How to Test
+1. Log in as Buyer
+2. Create a transaction by entering seller details and amount
+3. Click “Pay” to simulate payment (transaction moves to ESCROW)
+4. Open the transaction
+5. Click “Confirm Delivery”
 
-## App routes
+Expected outcomes:
+* If the transaction passes security checks → status becomes COMPLETED
+* If flagged as risky → transaction is blocked and a security alert is shown
 
-- `/` — Landing page
-- `/login` — Sign in
-- `/signup` — Sign up
-- `/forgot-password` — Request password reset
-- `/reset-password` — Complete password reset
-- `/dashboard` — Buyer dashboard
-- `/seller-dashboard` — Seller dashboard
-- `/admin` — Admin dashboard
-- `/create-transaction` — New escrow transaction
-- `/transaction/:id` — Transaction details
-- `/dispute/:id` — Dispute page
+## Overview
+TrustPay is a peer-to-peer escrow platform designed to address the lack of trust in online transactions, particularly in informal digital marketplaces across Africa.
 
-## Getting started
+In many real-world scenarios, buyers are required to pay upfront without assurance of delivery, leading to frequent scams and disputes. TrustPay introduces a system where transactions are only completed after delivery is confirmed and verified through a security layer.
 
-### 1) Install dependencies
+## Problem
+* Buyers are exposed to fraud after making payments
+* Sellers struggle to establish credibility
+* Fake payment confirmations are common
+* There is no reliable trust infrastructure for informal digital commerce
 
-```bash
-npm install
+## Solution
+TrustPay introduces a structured transaction flow that ensures:
+* Payments are not considered complete immediately
+* Transactions are held in a logical escrow state
+* A cybersecurity layer validates transactions before completion
+* Users can assess trust through a scoring system
+
+## Core Workflow
+1. Transaction Creation
+   Buyer creates a transaction with seller details and amount
+
+2. Payment
+   Payment is simulated and transaction status is updated to ESCROW
+
+3. Delivery
+   Seller delivers the product or service
+
+4. Confirmation
+   Buyer confirms delivery
+
+5. Security Validation
+   The system calls a cybersecurity API that:
+
+   * Validates transaction state
+   * Evaluates risk score
+   * Detects suspicious behavior
+
+6. Finalization
+
+   * If valid → transaction status becomes COMPLETED
+   * If flagged → transaction is blocked for review
+
+## Key Features
+### Escrow Logic
+Transactions are not finalized immediately after payment. Instead, they remain in an escrow state until delivery is confirmed.
+
+### Cybersecurity Risk Engine
+A dedicated backend system evaluates transactions before completion by:
+* Verifying transaction integrity
+* Assigning a risk score
+* Blocking high-risk transactions
+
+This ensures that even after payment, transactions are not blindly completed.
+
+
+### Trust Score System
+Users are assigned trust scores based on:
+* Transaction history
+* Dispute outcomes
+* Reviews
+This helps users make informed decisions before transacting.
+
+### Dispute Resolution
+Buyers can raise disputes with supporting information. Sellers can respond with evidence. The system supports structured resolution of conflicts.
+
+### Role-Based Experience
+* Buyers: create transactions, confirm delivery, raise disputes
+* Sellers: receive transactions, build credibility, manage profiles
+
+### Safety Education
+The platform includes role-specific guidance:
+* Buyers: scam prevention and safe transaction practices
+* Sellers: trust building and transaction management
+
+## System Architecture
+Frontend (React / Vercel)
+↓
+Backend (API Layer)
+↓
+Cybersecurity API (Risk Engine)
+↓
+Database (MongoDB / Cloud Database)
+
+## Tech Stack
+Frontend:
+* React
+* TypeScript
+* Tailwind CSS
+
+Backend:
+* Node.js
+
+Database:
+* MongoDB / Cloud Database
+
+Security Layer:
+* Custom Cybersecurity API
+
+## Cybersecurity API
+**Endpoint:**
+POST /api/transactions/confirm/:id
+
+**Description:**
+This endpoint performs validation and risk assessment before allowing a transaction to be completed.
+
+### Success Response
+```json
+{
+  "status": "Success",
+  "message": "Security checks passed. Funds released.",
+  "finalStatus": "COMPLETED"
+}
 ```
-
-### 2) Configure environment variables
-
-Create a `.env` file in the project root (or use `.env.local` in your local setup):
-
-```env
-VITE_SUPABASE_URL=your_supabase_project_url
-VITE_SUPABASE_PUBLISHABLE_KEY=your_supabase_anon_key
+### Error Response
+```json
+{
+  "error": "Security Block",
+  "message": "High-risk transaction detected.",
+  "riskScore": 60
+}
 ```
+## API Integration Note
+Due to temporary downtime of the Interswitch API during the buildathon, payment flow is currently simulated.
+However, the system is designed to integrate seamlessly with:
+* Interswitch Web Checkout (IPG)
+* Transaction verification APIs
 
-### 3) Run development server
+## Repository Structure
+/client → Frontend
+/server → Backend
+/cyber → Security engine
+/docs → Additional documentation
 
-```bash
-npm run dev
-```
+## Team
+* Alabi Ramat
+* Imoru Abdul Samad
+* Ayomide Oluwatola
 
-### 4) Build for production
+## Project Status
+* MVP complete
+* End-to-end transaction flow functional
+* Payment simulation implemented due to API constraints
 
-```bash
-npm run build
-```
-
-### 5) Preview production build
-
-```bash
-npm run preview
-```
-
-## Scripts
-
-- `npm run dev` — Start Vite dev server
-- `npm run build` — Production build
-- `npm run build:dev` — Development-mode build
-- `npm run preview` — Preview built app
-- `npm run lint` — Run ESLint
-- `npm run test` — Run unit tests once
-- `npm run test:watch` — Run unit tests in watch mode
-
-## Supabase notes
-
-- Supabase client setup lives in `src/integrations/supabase/client.ts`.
-- Database and auth are expected to be provided by your Supabase project.
-- Local Supabase config and migration artifacts are in the `supabase/` directory.
-
-## Testing
-
-Unit tests:
-
-```bash
-npm run test
-```
-
-End-to-end (Playwright):
-
-```bash
-npx playwright test
-```
-
-## Deployment
-
-Any static frontend host that supports Vite output works (for example: Vercel, Netlify, Cloudflare Pages).
-
-Deployment checklist:
-
-1. Set `VITE_SUPABASE_URL`
-2. Set `VITE_SUPABASE_PUBLISHABLE_KEY`
-3. Run build command: `npm run build`
-4. Publish `dist/`
-
-## Project structure (high-level)
-
-```text
-src/
-	components/      # Shared UI + feature components
-	contexts/        # React context providers
-	hooks/           # Custom hooks
-	i18n/            # Translation resources
-	integrations/    # External service clients (Supabase)
-	lib/             # Utility logic
-	pages/           # Route-level pages
-	test/            # Test setup and examples
-supabase/          # Supabase config, functions, migrations
-```
-
----
-
-If you want, I can also add a short “API and database schema” section next, based on your current Supabase tables and edge functions.
+## Conclusion
+TrustPay is not just a payment application. It is a structured trust system that ensures transactions are validated, secure, and fair before completion.
+It demonstrates how digital payments can evolve into intelligent systems that prioritize trust, verification, and user protection.
